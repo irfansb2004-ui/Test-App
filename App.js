@@ -8,6 +8,7 @@ import {
   Alert,
   FlatList,
   Image,
+  ImageBackground,
   Linking,
   SafeAreaView,
   ScrollView,
@@ -22,9 +23,8 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // ---------- Contact List Screen ----------
-function ContactListScreen({ navigation, contacts, setContacts }) {
+function ContactListScreen({ navigation, contacts, setContacts, darkMode, setDarkMode }) {
   const [search, setSearch] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
 
   const filteredContacts = contacts.filter(
     (c) =>
@@ -57,8 +57,13 @@ function ContactListScreen({ navigation, contacts, setContacts }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>📒 Contacts Infotech</Text>
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Text style={styles.title}>📒 Contacts Infotech</Text>
 
         <View style={styles.topRow}>
           <TextInput
@@ -90,14 +95,15 @@ function ContactListScreen({ navigation, contacts, setContacts }) {
             scrollEnabled={false}
           />
         )}
-      </ScrollView>
+        </ScrollView>
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => navigation.navigate("AddContact", { setContacts })}
-      >
-        <Text style={styles.fabText}>➕</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate("AddContact", { setContacts })}
+        >
+          <Text style={styles.fabText}>➕</Text>
+        </TouchableOpacity>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -134,10 +140,15 @@ function AddContactScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.formPage}>
-        <Text style={styles.pageTitle}>
-          {edit ? "✏️ Edit Contact" : "➕ Add Contact"}
-        </Text>
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: 0.2 }}
+      >
+        <View style={styles.formPage}>
+          <Text style={styles.pageTitle}>
+            {edit ? "✏️ Edit Contact" : "➕ Add Contact"}
+          </Text>
         <TextInput
           placeholder="Name"
           value={name}
@@ -151,10 +162,11 @@ function AddContactScreen({ route, navigation }) {
           keyboardType="phone-pad"
           style={styles.input}
         />
-        <TouchableOpacity style={styles.saveBtn} onPress={saveContact}>
-          <Text style={styles.saveBtnText}>💾 Save</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.saveBtn} onPress={saveContact}>
+            <Text style={styles.saveBtnText}>💾 Save</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -205,8 +217,13 @@ function ContactDetailsScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.detailsCard}>
-        <Image source={{ uri: contact.avatar }} style={styles.detailsAvatar} />
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: 0.2 }}
+      >
+        <View style={styles.detailsCard}>
+          <Image source={{ uri: contact.avatar }} style={styles.detailsAvatar} />
         <Text style={styles.detailsName}>{contact.name}</Text>
         <Text style={styles.detailsPhone}>{contact.phone}</Text>
 
@@ -245,64 +262,83 @@ function ContactDetailsScreen({ route, navigation }) {
           <Text style={styles.optionText}>✏️ Edit</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionBtn} onPress={deleteContact}>
-          <Text style={styles.optionText}>🗑 Delete</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.actionBtn} onPress={deleteContact}>
+            <Text style={styles.optionText}>🗑 Delete</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
 
 // ---------- Phone Screen ----------
-function PhoneScreen() {
+function PhoneScreen({ darkMode }) {
   return (
-    <SafeAreaView style={styles.centered}>
-      <Text style={styles.pageTitle}>📞 Phone Dialer</Text>
-      <Text style={{ marginTop: 10 }}>This will open device dialer.</Text>
-      <TouchableOpacity
-        style={styles.actionBtn}
-        onPress={() => Linking.openURL("tel:")}
+    <SafeAreaView style={[styles.safe, darkMode && { backgroundColor: "#111" }]}>
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
       >
-        <Text style={styles.optionText}>Open Dialer</Text>
-      </TouchableOpacity>
+        <View style={styles.scrollContent}>
+          <Text style={[styles.title, darkMode && { color: "#fff" }]}>📞 Phone Dialer</Text>
+        
+        <View style={styles.centered}>
+          <Text style={[{ marginTop: 10, color: "#666" }, darkMode && { color: "#ccc" }]}>This will open device dialer.</Text>
+          <TouchableOpacity
+            style={styles.actionBtn}
+            onPress={() => Linking.openURL("tel:")}
+          >
+            <Text style={styles.optionText}>Open Dialer</Text>
+          </TouchableOpacity>
+        </View>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
 
 // ---------- Favorites Screen ----------
-function FavoritesScreen({ contacts, navigation, setContacts }) {
+function FavoritesScreen({ contacts, navigation, setContacts, darkMode }) {
   const favs = contacts.filter((c) => c.favorite);
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>⭐ Favorites</Text>
+    <SafeAreaView style={[styles.safe, darkMode && { backgroundColor: "#111" }]}>
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Text style={[styles.title, darkMode && { color: "#fff" }]}>⭐ Favorites</Text>
+        
         {favs.length === 0 ? (
-          <Text style={styles.noContactsText}>No favorite contacts</Text>
+          <Text style={[styles.noContactsText, darkMode && { color: "#ccc" }]}>No favorite contacts</Text>
         ) : (
           favs.map((item) => (
             <TouchableOpacity
               key={item.id}
-              style={styles.card}
+              style={[styles.card, darkMode && styles.cardDark]}
               onPress={() =>
                 navigation.navigate("ContactDetails", { contact: item, setContacts })
               }
             >
               <Image source={{ uri: item.avatar }} style={styles.avatar} />
               <View style={styles.info}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.phone}>{item.phone}</Text>
+                <Text style={[styles.name, darkMode && styles.nameDark]}>{item.name}</Text>
+                <Text style={[styles.phone, darkMode && styles.phoneDark]}>{item.phone}</Text>
               </View>
             </TouchableOpacity>
           ))
         )}
-      </ScrollView>
+        </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
 
 // ---------- Tabs with Stack ----------
-function Tabs({ contacts, setContacts }) {
+function Tabs({ contacts, setContacts, darkMode, setDarkMode }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -316,15 +352,19 @@ function Tabs({ contacts, setContacts }) {
         },
       })}
     >
-      <Tab.Screen name="Phone" component={PhoneScreen} />
+      <Tab.Screen name="Phone">
+        {(props) => (
+          <PhoneScreen {...props} darkMode={darkMode} />
+        )}
+      </Tab.Screen>
       <Tab.Screen name="Contacts">
         {(props) => (
-          <ContactListScreen {...props} contacts={contacts} setContacts={setContacts} />
+          <ContactListScreen {...props} contacts={contacts} setContacts={setContacts} darkMode={darkMode} setDarkMode={setDarkMode} />
         )}
       </Tab.Screen>
       <Tab.Screen name="Favorites">
         {(props) => (
-          <FavoritesScreen {...props} contacts={contacts} setContacts={setContacts} />
+          <FavoritesScreen {...props} contacts={contacts} setContacts={setContacts} darkMode={darkMode} />
         )}
       </Tab.Screen>
     </Tab.Navigator>
@@ -333,6 +373,7 @@ function Tabs({ contacts, setContacts }) {
 
 // ---------- App Root ----------
 export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
   const [contacts, setContacts] = useState([
     {
       id: "1",
@@ -367,7 +408,7 @@ export default function App() {
     {
       id: "7",
       name: "murugan",
-      phone: "+8148394143",
+      phone: "+91 8148394143",
       avatar: "https://randomuser.me/api/portraits/men/44.jpg",
       favorite: false,
     },
@@ -394,7 +435,7 @@ export default function App() {
     },
     {
       id: "4",
-      name: "Mohamed Fathima",
+      name: "Fathima",
       phone: "+91 6374435384",
       avatar: "https://randomuser.me/api/portraits/women/12.jpg",
       favorite: false,
@@ -412,7 +453,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" options={{ headerShown: false }}>
-          {(props) => <Tabs {...props} contacts={contacts} setContacts={setContacts} />}
+          {(props) => <Tabs {...props} contacts={contacts} setContacts={setContacts} darkMode={darkMode} setDarkMode={setDarkMode} />}
         </Stack.Screen>
         <Stack.Screen name="AddContact" component={AddContactScreen} />
         <Stack.Screen name="ContactDetails" component={ContactDetailsScreen} />
@@ -423,7 +464,7 @@ export default function App() {
 
 // ---------- Styles ----------
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
+  safe: { flex: 1, backgroundColor: "#fff" },
   scrollContent: { padding: 16, paddingBottom: 80 },
   title: {
     fontSize: 26,
@@ -544,4 +585,5 @@ const styles = StyleSheet.create({
   optionText: { color: "#fff", fontWeight: "700", fontSize: 16 },
 
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+  backgroundImage: { flex: 1 },
 });
