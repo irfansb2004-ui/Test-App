@@ -287,7 +287,7 @@ function PhoneScreen({ darkMode }) {
           <Text style={[{ marginTop: 10, color: "#666" }, darkMode && { color: "#ccc" }]}>This will open device dialer.</Text>
           <TouchableOpacity
             style={styles.actionBtn}
-            onPress={() => Linking.openURL("tel:")}
+            onPress={() => Linking.openURL("tel:123").catch(() => Alert.alert("Error", "Cannot open dialer"))}
           >
             <Text style={styles.optionText}>Open Dialer</Text>
           </TouchableOpacity>
@@ -382,6 +382,14 @@ export default function App() {
       avatar: "https://randomuser.me/api/portraits/men/32.jpg",
       favorite: false,
     },
+
+       {
+      id: "2",
+      name: "Mohamed Rafeek",
+      phone: "+91 7305792442",
+      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+      favorite: true,
+    },
      {
       id: "3",
       name: "Sajith Ahamed",
@@ -390,14 +398,6 @@ export default function App() {
       favorite: false,
     },
      
-    {
-      id: "2",
-      name: "Mohamed Rafeek",
-      phone: "+91 7305792442",
-      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-      favorite: true,
-    },
-    
     {
       id: "8",
       name: "AL harees",
@@ -427,7 +427,7 @@ export default function App() {
       favorite: true,
     },
     {
-      id: "3",
+      id: "11",
       name: "Sajina Jahan",
       phone: "+91 8825594989",
       avatar: "https://randomuser.me/api/portraits/women/65.jpg",
@@ -509,8 +509,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#f9f9f9",
     elevation: 3,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  cardDark: { backgroundColor: "#222" },
+  cardDark: { 
+    backgroundColor: "#222", 
+    borderColor: "#444",
+    shadowColor: "#fff",
+    shadowOpacity: 0.05,
+  },
   avatar: { width: 64, height: 64, borderRadius: 32, marginRight: 12 },
   info: { flex: 1 },
   name: { fontSize: 17, fontWeight: "700", color: "#111" },
