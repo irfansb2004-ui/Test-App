@@ -57,7 +57,7 @@ function ContactListScreen({ navigation, contacts, setContacts, darkMode, setDar
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ImageBackground 
+      <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
         style={styles.backgroundImage}
         imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
@@ -65,36 +65,36 @@ function ContactListScreen({ navigation, contacts, setContacts, darkMode, setDar
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Text style={styles.title}>📒 Contacts Infotech</Text>
 
-        <View style={styles.topRow}>
-          <TextInput
-            placeholder="🔍 Search by name or phone"
-            placeholderTextColor={darkMode ? "#aaa" : "#555"}
-            style={[styles.searchInput, darkMode && styles.searchInputDark]}
-            value={search}
-            onChangeText={setSearch}
-          />
-          <TouchableOpacity
-            style={styles.darkToggle}
-            onPress={() => setDarkMode(!darkMode)}
-          >
-            <Text style={styles.darkToggleText}>
-              {darkMode ? "🌙" : "☀️"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.topRow}>
+            <TextInput
+              placeholder="🔍 Search by name or phone"
+              placeholderTextColor={darkMode ? "#aaa" : "#555"}
+              style={[styles.searchInput, darkMode && styles.searchInputDark]}
+              value={search}
+              onChangeText={setSearch}
+            />
+            <TouchableOpacity
+              style={styles.darkToggle}
+              onPress={() => setDarkMode(!darkMode)}
+            >
+              <Text style={styles.darkToggleText}>
+                {darkMode ? "🌙" : "☀️"}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {filteredContacts.length === 0 ? (
-          <Text style={[styles.noContactsText, darkMode && { color: "#ccc" }]}>
-            No contacts found
-          </Text>
-        ) : (
-          <FlatList
-            data={filteredContacts}
-            renderItem={ContactCard}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-          />
-        )}
+          {filteredContacts.length === 0 ? (
+            <Text style={[styles.noContactsText, darkMode && { color: "#ccc" }]}>
+              No contacts found
+            </Text>
+          ) : (
+            <FlatList
+              data={filteredContacts}
+              renderItem={ContactCard}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={false}
+            />
+          )}
         </ScrollView>
 
         <TouchableOpacity
@@ -113,6 +113,9 @@ function AddContactScreen({ route, navigation }) {
   const { setContacts, edit, contact } = route.params || {};
   const [name, setName] = useState(contact ? contact.name : "");
   const [phone, setPhone] = useState(contact ? contact.phone : "");
+  // --- ADDED ---: State for the avatar URL
+  const [avatarUrl, setAvatarUrl] = useState(contact ? contact.avatar : "");
+
 
   const saveContact = () => {
     if (!name.trim() || !phone.trim()) {
@@ -120,16 +123,22 @@ function AddContactScreen({ route, navigation }) {
       return;
     }
 
+    const finalAvatar = avatarUrl.trim()
+      ? avatarUrl.trim()
+      : `https://picsum.photos/seed/${Date.now()}/100`;
+
+
     if (edit) {
       setContacts((prev) =>
-        prev.map((c) => (c.id === contact.id ? { ...c, name, phone } : c))
+        prev.map((c) => (c.id === contact.id ? { ...c, name, phone, avatar: finalAvatar } : c))
       );
     } else {
       const newContact = {
         id: Date.now().toString(),
         name,
         phone,
-        avatar: "https://randomuser.me/api/portraits/lego/1.jpg",
+        // --- MODIFIED ---: Use avatar from state or default
+        avatar: finalAvatar,
         favorite: false,
       };
       setContacts((prev) => [newContact, ...prev]);
@@ -140,7 +149,7 @@ function AddContactScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ImageBackground 
+      <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
         style={styles.backgroundImage}
         imageStyle={{ opacity: 0.2 }}
@@ -161,6 +170,14 @@ function AddContactScreen({ route, navigation }) {
           onChangeText={setPhone}
           keyboardType="phone-pad"
           style={styles.input}
+        />
+        {/* --- ADDED ---: New TextInput for Avatar URL */}
+        <TextInput
+          placeholder="Avatar URL (optional)"
+          value={avatarUrl}
+          onChangeText={setAvatarUrl}
+          style={styles.input}
+          autoCapitalize="none"
         />
           <TouchableOpacity style={styles.saveBtn} onPress={saveContact}>
             <Text style={styles.saveBtnText}>💾 Save</Text>
@@ -217,7 +234,7 @@ function ContactDetailsScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ImageBackground 
+      <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
         style={styles.backgroundImage}
         imageStyle={{ opacity: 0.2 }}
@@ -275,7 +292,7 @@ function ContactDetailsScreen({ route, navigation }) {
 function PhoneScreen({ darkMode }) {
   return (
     <SafeAreaView style={[styles.safe, darkMode && { backgroundColor: "#111" }]}>
-      <ImageBackground 
+      <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
         style={styles.backgroundImage}
         imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
@@ -304,7 +321,7 @@ function FavoritesScreen({ contacts, navigation, setContacts, darkMode }) {
 
   return (
     <SafeAreaView style={[styles.safe, darkMode && { backgroundColor: "#111" }]}>
-      <ImageBackground 
+      <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=1200&fit=crop' }}
         style={styles.backgroundImage}
         imageStyle={{ opacity: darkMode ? 0.3 : 0.2 }}
@@ -382,7 +399,6 @@ export default function App() {
       avatar: "https://randomuser.me/api/portraits/men/32.jpg",
       favorite: false,
     },
-
        {
       id: "2",
       name: "Mohamed Rafeek",
@@ -397,7 +413,6 @@ export default function App() {
       avatar: "https://randomuser.me/api/portraits/men/65.jpg",
       favorite: false,
     },
-     
     {
       id: "8",
       name: "AL harees",
